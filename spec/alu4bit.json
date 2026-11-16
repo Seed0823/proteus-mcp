@@ -1,0 +1,921 @@
+{
+ "meta": {
+  "title": "4 位 ALU（74LS181 + 4x74LS373）",
+  "source": "assets/schematic.png",
+  "note": "由已验证网表反推，用于测试比对脚本，不代表识别结果"
+ },
+ "components": [
+  {
+   "ref": "U1",
+   "part": "74LS181",
+   "col": 2,
+   "row": 0
+  },
+  {
+   "ref": "U2",
+   "part": "74LS373",
+   "col": 1,
+   "row": 0,
+   "pins": {
+    "$OE$": "GND"
+   }
+  },
+  {
+   "ref": "U3",
+   "part": "74LS373",
+   "col": 1,
+   "row": 1,
+   "pins": {
+    "$OE$": "GND"
+   }
+  },
+  {
+   "ref": "U4",
+   "part": "74LS373",
+   "col": 1,
+   "row": 2,
+   "pins": {
+    "$OE$": "GND"
+   }
+  },
+  {
+   "ref": "U5",
+   "part": "74LS373",
+   "col": 3,
+   "row": 0,
+   "pins": {
+    "$OE$": "GND"
+   }
+  },
+  {
+   "ref": "LED0",
+   "part": "LED-RED",
+   "col": 4,
+   "row": 0,
+   "pins": {
+    "K": "GND"
+   }
+  },
+  {
+   "ref": "LED1",
+   "part": "LED-RED",
+   "col": 4,
+   "row": 1,
+   "pins": {
+    "K": "GND"
+   }
+  },
+  {
+   "ref": "LED2",
+   "part": "LED-RED",
+   "col": 4,
+   "row": 2,
+   "pins": {
+    "K": "GND"
+   }
+  },
+  {
+   "ref": "LED3",
+   "part": "LED-RED",
+   "col": 4,
+   "row": 3,
+   "pins": {
+    "K": "GND"
+   }
+  },
+  {
+   "ref": "SW_A0",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 0,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_A1",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 1,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_A2",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 2,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_A3",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 3,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_B0",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 4,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_B1",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 5,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_B2",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 6,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_B3",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 7,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_CN",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 8,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_LOAD",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 9,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_M",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 10,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_S0",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 11,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_S1",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 12,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_S2",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 13,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  },
+  {
+   "ref": "SW_S3",
+   "part": "SW-SPDT",
+   "col": 0,
+   "row": 14,
+   "pins": {
+    "NO": "VCC",
+    "NC": "GND"
+   }
+  }
+ ],
+ "nets": [
+  {
+   "name": "B1_N",
+   "pins": [
+    [
+     "U3",
+     "D1"
+    ],
+    [
+     "SW_B1",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "LOAD",
+   "pins": [
+    [
+     "SW_LOAD",
+     "COM"
+    ],
+    [
+     "U5",
+     "LE"
+    ],
+    [
+     "U4",
+     "LE"
+    ],
+    [
+     "U3",
+     "LE"
+    ],
+    [
+     "U2",
+     "LE"
+    ]
+   ]
+  },
+  {
+   "name": "GND",
+   "pins": [
+    [
+     "LED3",
+     "K"
+    ],
+    [
+     "LED2",
+     "K"
+    ],
+    [
+     "LED1",
+     "K"
+    ],
+    [
+     "LED0",
+     "K"
+    ],
+    [
+     "SW_LOAD",
+     "NC"
+    ],
+    [
+     "SW_CN",
+     "NC"
+    ],
+    [
+     "SW_M",
+     "NC"
+    ],
+    [
+     "SW_S3",
+     "NC"
+    ],
+    [
+     "SW_S2",
+     "NC"
+    ],
+    [
+     "SW_S1",
+     "NC"
+    ],
+    [
+     "SW_S0",
+     "NC"
+    ],
+    [
+     "SW_B3",
+     "NC"
+    ],
+    [
+     "SW_B2",
+     "NC"
+    ],
+    [
+     "SW_B1",
+     "NC"
+    ],
+    [
+     "SW_B0",
+     "NC"
+    ],
+    [
+     "SW_A3",
+     "NC"
+    ],
+    [
+     "SW_A2",
+     "NC"
+    ],
+    [
+     "SW_A1",
+     "NC"
+    ],
+    [
+     "SW_A0",
+     "NC"
+    ],
+    [
+     "U5",
+     "GND"
+    ],
+    [
+     "U5",
+     "$OE$"
+    ],
+    [
+     "U4",
+     "GND"
+    ],
+    [
+     "U4",
+     "$OE$"
+    ],
+    [
+     "U3",
+     "GND"
+    ],
+    [
+     "U3",
+     "$OE$"
+    ],
+    [
+     "U2",
+     "GND"
+    ],
+    [
+     "U2",
+     "$OE$"
+    ],
+    [
+     "U1",
+     "GND"
+    ]
+   ]
+  },
+  {
+   "name": "VCC/VDD",
+   "pins": [
+    [
+     "SW_LOAD",
+     "NO"
+    ],
+    [
+     "SW_CN",
+     "NO"
+    ],
+    [
+     "SW_M",
+     "NO"
+    ],
+    [
+     "SW_S3",
+     "NO"
+    ],
+    [
+     "SW_S2",
+     "NO"
+    ],
+    [
+     "SW_S1",
+     "NO"
+    ],
+    [
+     "SW_S0",
+     "NO"
+    ],
+    [
+     "SW_B3",
+     "NO"
+    ],
+    [
+     "SW_B2",
+     "NO"
+    ],
+    [
+     "SW_B1",
+     "NO"
+    ],
+    [
+     "SW_B0",
+     "NO"
+    ],
+    [
+     "SW_A3",
+     "NO"
+    ],
+    [
+     "SW_A2",
+     "NO"
+    ],
+    [
+     "SW_A1",
+     "NO"
+    ],
+    [
+     "SW_A0",
+     "NO"
+    ],
+    [
+     "U5",
+     "VCC"
+    ],
+    [
+     "U4",
+     "VCC"
+    ],
+    [
+     "U3",
+     "VCC"
+    ],
+    [
+     "U2",
+     "VCC"
+    ],
+    [
+     "U1",
+     "VCC"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#0",
+   "pins": [
+    [
+     "U1",
+     "A0"
+    ],
+    [
+     "U2",
+     "Q0"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#1",
+   "pins": [
+    [
+     "U1",
+     "A1"
+    ],
+    [
+     "U2",
+     "Q1"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#2",
+   "pins": [
+    [
+     "U1",
+     "A2"
+    ],
+    [
+     "U2",
+     "Q2"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#3",
+   "pins": [
+    [
+     "U1",
+     "A3"
+    ],
+    [
+     "U2",
+     "Q3"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#4",
+   "pins": [
+    [
+     "U1",
+     "B0"
+    ],
+    [
+     "U3",
+     "Q0"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#5",
+   "pins": [
+    [
+     "U1",
+     "B1"
+    ],
+    [
+     "U3",
+     "Q1"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#6",
+   "pins": [
+    [
+     "U1",
+     "B2"
+    ],
+    [
+     "U3",
+     "Q2"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#7",
+   "pins": [
+    [
+     "U1",
+     "B3"
+    ],
+    [
+     "U3",
+     "Q3"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#8",
+   "pins": [
+    [
+     "U1",
+     "CN"
+    ],
+    [
+     "SW_CN",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#9",
+   "pins": [
+    [
+     "U1",
+     "S0"
+    ],
+    [
+     "U4",
+     "Q0"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#10",
+   "pins": [
+    [
+     "U1",
+     "S1"
+    ],
+    [
+     "U4",
+     "Q1"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#11",
+   "pins": [
+    [
+     "U1",
+     "S2"
+    ],
+    [
+     "U4",
+     "Q2"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#12",
+   "pins": [
+    [
+     "U1",
+     "S3"
+    ],
+    [
+     "U4",
+     "Q3"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#13",
+   "pins": [
+    [
+     "U1",
+     "M"
+    ],
+    [
+     "U4",
+     "Q4"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#14",
+   "pins": [
+    [
+     "U1",
+     "F0"
+    ],
+    [
+     "U5",
+     "D0"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#15",
+   "pins": [
+    [
+     "U1",
+     "F1"
+    ],
+    [
+     "U5",
+     "D1"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#16",
+   "pins": [
+    [
+     "U1",
+     "F2"
+    ],
+    [
+     "U5",
+     "D2"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#17",
+   "pins": [
+    [
+     "U1",
+     "F3"
+    ],
+    [
+     "U5",
+     "D3"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#18",
+   "pins": [
+    [
+     "U2",
+     "D0"
+    ],
+    [
+     "SW_A0",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#19",
+   "pins": [
+    [
+     "U2",
+     "D1"
+    ],
+    [
+     "SW_A1",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#20",
+   "pins": [
+    [
+     "U2",
+     "D2"
+    ],
+    [
+     "SW_A2",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#21",
+   "pins": [
+    [
+     "U2",
+     "D3"
+    ],
+    [
+     "SW_A3",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#22",
+   "pins": [
+    [
+     "U3",
+     "D0"
+    ],
+    [
+     "SW_B0",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#23",
+   "pins": [
+    [
+     "U3",
+     "D2"
+    ],
+    [
+     "SW_B2",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#24",
+   "pins": [
+    [
+     "U3",
+     "D3"
+    ],
+    [
+     "SW_B3",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#25",
+   "pins": [
+    [
+     "U4",
+     "D0"
+    ],
+    [
+     "SW_S0",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#26",
+   "pins": [
+    [
+     "U4",
+     "D1"
+    ],
+    [
+     "SW_S1",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#27",
+   "pins": [
+    [
+     "U4",
+     "D2"
+    ],
+    [
+     "SW_S2",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#28",
+   "pins": [
+    [
+     "U4",
+     "D3"
+    ],
+    [
+     "SW_S3",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#29",
+   "pins": [
+    [
+     "U4",
+     "D4"
+    ],
+    [
+     "SW_M",
+     "COM"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#30",
+   "pins": [
+    [
+     "U5",
+     "Q0"
+    ],
+    [
+     "LED0",
+     "A"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#31",
+   "pins": [
+    [
+     "U5",
+     "Q1"
+    ],
+    [
+     "LED1",
+     "A"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#32",
+   "pins": [
+    [
+     "U5",
+     "Q2"
+    ],
+    [
+     "LED2",
+     "A"
+    ]
+   ]
+  },
+  {
+   "name": "unnamed#33",
+   "pins": [
+    [
+     "U5",
+     "Q3"
+    ],
+    [
+     "LED3",
+     "A"
+    ]
+   ]
+  }
+ ]
+}
