@@ -1,6 +1,6 @@
 ---
 name: proteus-mcp
-description: 通过 MCP 直接驱动 Proteus（ISIS/VSM）画原理图、放元件、布网络、读网表、跑仿真，替代脆弱的鼠标键盘自动化。当用户要在 Proteus 里画电路、改电路、检查连线、批量放置器件、验证仿真结果、导出图纸，或抱怨"手动点太慢""鼠标点不准"时使用。关键词：Proteus、MCP、原理图、网表、74LS181、布线、仿真。
+description: 通过 ProPilot 的 MCP 端点（127.0.0.1:8001）操作 Proteus 9 原理图：放元件、布网络、读网表并断言接线正确、跑仿真。定位是"调用层 + 验收层"，不接管进程、不做 GUI 自动化。当用户要在 Proteus 里画电路、改电路、核对连线、批量放件、验证仿真结果时使用。关键词：Proteus、ProPilot、MCP、原理图、网表断言、74LS181、布线、仿真。
 ---
 
 # Proteus MCP
