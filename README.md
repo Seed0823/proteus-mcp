@@ -2,6 +2,11 @@
 
 > 补上 ProPilot MCP 缺的那一半：**不只是画得出来，还要证明画对了。**
 
+![4 位 ALU：由 agent 从空白图纸建出的原理图](assets/schematic.png)
+
+*上图是 agent 从空白工程建出的 4 位 ALU —— 1×74LS181 + 4×74LS373 + 15×SW-SPDT + 4×LED，
+全程走 MCP，没有一次鼠标点击。*
+
 Proteus 9 的 ProPilot 已经在 `127.0.0.1:8001` 上摆好了 98 个工具——放件、布线、读网表、
 跑仿真全都能调。它不管的是另外两件事：怎么用最少的代码稳定调到，以及**怎么确认接线真的对**。
 
@@ -101,7 +106,12 @@ call("schematic_end_transaction", {"id": design})         # 6. 提交，网表�
 netlist = call("schematic_get_netlist", {"id": design, "sheet": sheet})
 ```
 
-构建完一定要跑 `verify.py`，别靠图看着像连上了。
+构建完一定要跑 `verify.py`，别靠图看着像连上了。它把"看起来连着"变成"断言通过 + 退出码 0"：
+
+![verify.py 的输出：6 条断言全部 OK](assets/verify.png)
+
+上图的输出就来自那张 4 位 ALU：72 个网、123 个引脚有归属、GND 9 脚、VCC 5 脚，断言全过。
+任何一条对不上，`verify.py` 会打印 `FAIL` 并返回 1，可以直接挂到 CI 里。
 
 ## 工具地图（98 个）
 
