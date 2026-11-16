@@ -36,6 +36,12 @@ def load(args):
 
 
 def flatten(data):
+    # MCP 返回的是 {"data": {"nets": ...}, "message": ...}；离线网表 JSON 可能是
+    # 裸的 {"nets": ...}，也可能是整个响应。两种都要认。
+    if isinstance(data, dict) and "nets" not in data:
+        inner = data.get("data")
+        if isinstance(inner, dict) and "nets" in inner:
+            data = inner
     nets = data.get("nets") or {}
     out = []
     for group in ("named", "unnamed", "notconnected"):
