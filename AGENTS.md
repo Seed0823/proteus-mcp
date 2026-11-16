@@ -124,6 +124,11 @@ python scripts/verify.py --refs U1,U2 --expect "U1.A0=U2.Q0,U1.F0=U5.D0"
 | `Error: Unknown device` | 器件名不对 | `library_search` 查精确名，注意 `SW-SPDT`、`LED-RED` 这类带横杠的 |
 | `routed: 0` | 该网布不通 | 挪器件拉大间距，或先打标号再布 |
 | 模型加载失败 | 器件 VALUE 为空 | 重新放件并带 `value` |
+| `get_netlist` 返回 0 个网 | 返回体比离线导出多包一层 `data` | 读 `resp["data"]["nets"]` |
+| `file_save` 超时无返回 | 8.x 工程存盘要确认转 9.2 格式，弹了模态框 | 人工点一下；或给按钮发回车消息 |
+| `reads the compiled netlist` | 事务未提交 | 先 `end_transaction`；中途只想看用 `get_image` |
+| `nested transaction` / `abandon is only valid for the outermost` | `begin` 多于 `end` | 普通 `end` 逐层关掉，最后才能 `abandon` |
+| `would overlap the existing terminal(s)` | 两个网络标号抢同一位置 | 拉大器件间距或斜向错开 |
 
 ## 7. 交付前自检
 
