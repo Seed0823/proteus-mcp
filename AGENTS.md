@@ -1,6 +1,7 @@
-# AGENTS.md — 给 AI agent 的 Proteus 操作规程
+# AGENTS.md — 给 AI agent 的 ProPilot 操作规程
 
-你要操作 Proteus（ISIS 原理图 + VSM 仿真）。**不要用鼠标键盘自动化**，走 MCP。
+你要操作 Proteus（ISIS 原理图 + VSM 仿真）。**不要用鼠标键盘自动化**，走 ProPilot 自带的 MCP 端点。
+本仓库只是客户端 + 验收层：不装服务器、不接管进程、不碰 GUI。
 
 ## 0. 一句话结论
 
