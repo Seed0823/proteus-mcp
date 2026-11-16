@@ -1,9 +1,18 @@
 # proteus-mcp
 
-> 让 AI agent 直接驱动 Proteus 画原理图、连网络、跑仿真 —— 不用模拟鼠标点菜单。
+> 补上 ProPilot MCP 缺的那一半：**不只是画得出来，还要证明画对了。**
 
-Drive Proteus (ISIS) from an AI agent over MCP: place parts, route nets, read the
-netlist, run simulation. No GUI automation, no clicking.
+Proteus 9 的 ProPilot 已经在 `127.0.0.1:8001` 上摆好了 98 个工具——放件、布线、读网表、
+跑仿真全都能调。它不管的是另外两件事：怎么用最少的代码稳定调到，以及**怎么确认接线真的对**。
+
+这个仓库只做这两件事，再把踩过的坑原样写下来。
+
+> **Client, not server.** 不打包 MCP 服务器、不接管 Proteus 进程、不模拟鼠标。
+> 前提是你已经在用官方 ProPilot；这里提供的是那个"能跑、能断言、少踩坑"的调用层。
+
+Drive Proteus 9's built-in ProPilot MCP from any agent: a zero-dependency JSON-RPC
+client, netlist assertions that fail loudly, and 13 pitfalls found by actually drawing
+a 4-bit ALU. No server, no GUI automation, no bundled vendor assets.
 
 ---
 
@@ -27,6 +36,19 @@ Proteus 9 装好后，它自带的 AI 助手 **ProPilot** 会在本机起一个 
 | `AGENTS.md` | 给 agent 读的操作规程 + 13 条实测踩坑 |
 | `examples/alu4bit.py` | 真实案例：4 位 ALU（74LS181 + 4×74LS373 + LED）全自动构建 |
 | `SKILL.md` | 可直接装进 WorkBuddy / Claude Skills 的技能描述 |
+
+## 做什么 / 不做什么
+
+定位就一句话：**站在 ProPilot 之上，做调用层和验收层，不做替代品。**
+
+| 做 | 不做 |
+|---|---|
+| 调 ProPilot 已有的 98 个工具，代码量压到一个文件 | 不自建 MCP 服务器、不造 bridge、不做本机校准 |
+| 网表断言：`--expect "U1.A0=U2.Q0"`，不通过就非零退出码 | 不重复实现 ERC / DRC / BOM / PCB 布线——那是 Proteus 自己的活儿 |
+| 把实测踩到的坑连同正解写进 `AGENTS.md` | 不打包、不转存任何元件库（`.LIB`）、模型（`.MODEL`）、工程（`.pdsprj`） |
+| 一个从空白工程跑通的 4 位 ALU 例子 | 不承诺跨 Proteus 版本的参数兼容，也不追官方新版本 |
+
+没有 Windows UI 自动化后端，也不需要——坐标是图纸单位、操作是原子事务、结果能读网表自证。
 
 ## 为什么不用 GUI 自动化
 
@@ -136,10 +158,17 @@ SW_LOAD → 四片 373 的 LE（1=透明，0=保持）
 元件：1×74LS181、4×74LS373、15×SW-SPDT、4×LED-RED。
 跑完用 `verify.py` 核对，34 条信号网全通、GND 9 脚、VCC 5 脚。
 
-## 环境
+## 适用边界
 
-实测于 Windows 11 + Proteus 9 + ProPilot，Python 3.8+，无第三方依赖。
-其他版本端口/参数可能不同，以 `mcpc.py schema` 打印的实时 schema 为准。
+| 项 | 实测值 |
+|---|---|
+| Proteus | 9.x Professional。ProPilot 是 9 才引入的，8.x 及更早没有这个端点 |
+| 端点 | `http://127.0.0.1:8001/`，Proteus 在运行且 ProPilot 面板启用过才会监听 |
+| 系统 | Windows（Proteus 自身的限制） |
+| Python | 3.8+，**无第三方依赖**，只用标准库 |
+| 生效范围 | 原理图 + 实时仿真。PCB、ERC/DRC、BOM、器件库编辑不在射程内 |
+
+参数随 ProPilot 版本变化，**以 `mcpc.py schema` 打印的实时 schema 为准**，别照抄本文档里的参数名。
 
 ## 声明
 
