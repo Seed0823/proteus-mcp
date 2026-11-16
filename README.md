@@ -36,10 +36,11 @@ Proteus 9 装好后，它自带的 AI 助手 **ProPilot** 会在本机起一个 
 
 | 文件 | 作用 |
 |---|---|
+| `demo/minimal.py` | **60 秒样板**：2 片 373 + 4 开关 + 4 LED，从空白图纸建完并自证 13 条断言 |
 | `scripts/mcpc.py` | 零依赖 MCP 客户端 + 命令行，任何能跑 shell 的 agent 直接可用 |
 | `scripts/verify.py` | 网表核对：谁连了谁、哪里断了、电源接对没 |
-| `AGENTS.md` | 给 agent 读的操作规程 + 13 条实测踩坑 |
-| `examples/alu4bit.py` | 真实案例：4 位 ALU（74LS181 + 4×74LS373 + LED）全自动构建 |
+| `AGENTS.md` | 给 agent 读的操作规程 + 18 条实测踩坑 |
+| `examples/alu4bit.py` | 完整案例：4 位 ALU（74LS181 + 4×74LS373 + LED）全自动构建 |
 | `SKILL.md` | 可直接装进 WorkBuddy / Claude Skills 的技能描述 |
 
 ## 做什么 / 不做什么
@@ -62,7 +63,7 @@ Proteus 9 装好后，它自带的 AI 助手 **ProPilot** 会在本机起一个 
 而 MCP 是软件自己暴露的接口——坐标是图纸单位（thou），操作是原子事务，
 做完还能读网表自证。**能调接口就不要点鼠标。**
 
-## 30 秒验证
+## 第一步：确认端点活着
 
 前置：Proteus 已启动、已加载（或新建）一个工程、ProPilot 面板启用过。
 
@@ -74,11 +75,31 @@ python scripts/mcpc.py probe
 
 python scripts/mcpc.py status
 # {"data":{"status":{"schematic":{"current_design_id":"1","current_sheet_id":"1"}}}...}
-
-python scripts/mcpc.py call get_current_status
 ```
 
 拿到 `design_id` 后就能操作了。**不要硬编码 id**，用 `mcpc.ids()` 现取。
+
+## 第二步：60 秒跑通第一张图
+
+```bash
+python demo/minimal.py
+```
+
+在一张**空白图纸**上放 2 片 74LS373、4 个开关、4 个 LED，连好线，然后自己读回网表核对 13 条断言：
+
+![demo/minimal.py 建出来的电路](assets/demo.png)
+
+```
+[4/4] 逐网布线（一次只传一个 net，批量会部分失败）
+  OK   IN0 ...  OK   Q3
+[自检] 读网表核对 13 条断言
+  OK   SW0.COM=U1.D0        (unnamed#0 / unnamed#0)
+  ...
+PASS 13/13 个断言全部通过
+```
+
+退出码 0 才算真跑通。这是整个仓库的出发点：**建完不验，等于没建**。
+`demo/minimal.py` 只有 130 行，是把本仓库所有约定压到最小的那份样板。
 
 ## 标准流程
 
@@ -153,6 +174,11 @@ python scripts/mcpc.py schema route_nets    # 看完整参数说明
 | 11 | 网表里 VCC/GND 出现在奇怪位置 | TTL 的电源引脚以 `Power Pin` 类型出现在网表里，属正常；`$OE$`、`LE` 这类使能脚要自己接 |
 | 12 | 明明没占线，`routed: 0` 布不过去 | 两个器件之间的**通道不够宽**。N 根线要过同一个缺口，至少需要 (N+1) 个网格宽度；可用 `bus_grid: 50`（或 25）把折线列压细，或干脆挪开器件 |
 | 13 | 布线报告里的长度数字对不上 | 报告里的几何量是 Proteus base unit，**不是 thou**。只信 `corners` / `diagonal` / `over_corners`，别拿绝对长度算距离 |
+| 14 | 在线读网表永远返回 0 个网 | 返回体是 `{"data": {"nets": ...}, "message": ...}`，比离线导出多包一层。`verify.py` 已自动剥壳，自己写代码时别直接读 `resp["nets"]` |
+| 15 | `file_save` 一直不返回、超时 | 用 Proteus 8.x 建的工程存盘时会弹「File will be saved in version 9.2 format」模态框，等不到确认就卡住。要么人工点一下，要么用 `SendMessage` 给按钮发消息（Qt 窗口不认 `BM_CLICK`，得发回车） |
+| 16 | `get_component_info` 报 "reads the compiled netlist" | 它读的是编译后的网表，事务没提交前不可用。先 `end_transaction`；如果只是想中途看一眼，用 `get_image` 或 `get_object_geometry` |
+| 17 | 第二次 `begin_transaction` 报 nested | 每次 `begin` 必须配对一次 `end`。批量脚本里失败重试很容易漏掉，导致事务层层嵌套；`abandon: true` 只对最外层有效，得先用普通 `end` 逐层关掉 |
+| 18 | 打标号报 "would overlap the existing terminal(s)" | 两个网络标号抢同一块地方。把器件间距拉大，或者干脆斜着错开（比如 LED 竖排时每条横移 800 thou） |
 
 ## 4 位 ALU 案例
 
