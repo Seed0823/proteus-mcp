@@ -14,7 +14,7 @@ Proteus 9 装好之后，自带的 ProPilot 会在本机起一个 MCP 服务
 二是它不在乎你画得对不对，线断了、电源接错、器件 VALUE 为空，图上看不出来。
 
 所以这里有三个东西：一个能直接调的客户端，一个把网表读回来逐脚核对的脚本，
-以及画完那张 ALU 之后整理的 18 个坑。
+以及画完那张 ALU 之后整理的 22 个坑。
 
 > **这是客户端，不是服务器。** 不打包 MCP 服务、不接管 Proteus 进程、不模拟鼠标。
 > 前提是你已经在用官方的 ProPilot，这里只提供调它的那一层。
@@ -37,6 +37,9 @@ found while drawing a 4-bit ALU. No server, no GUI automation, no vendor assets.
 | `demo/minimal.py` | 最小的例子：2 片 373 + 4 个开关 + 4 个 LED，从空白图纸建完并自检 13 条断言 |
 | `scripts/mcpc.py` | 零依赖客户端，带命令行，只用标准库 |
 | `scripts/verify.py` | 读网表核对：谁连了谁、哪里断了、电源接对没 |
+| `scripts/draw_spec.py` | 照一份电路清单（JSON）摆件连线，坐标自动排 |
+| `scripts/netlist_diff.py` | 把网表和清单当两张图比：有没有分家、短接、漏画 |
+| `spec/` | 清单格式说明 + 两份现成清单（ALU、373 样板电路） |
 | `AGENTS.md` | 给 agent 看的操作规程，以及踩坑对照表 |
 | `examples/alu4bit.py` | 上面那张 ALU 的构建脚本 |
 | `SKILL.md` | 能直接装进 WorkBuddy / Claude Skills 的技能描述 |
@@ -98,6 +101,39 @@ PASS 13/13 个断言全部通过
 ```
 
 看到退出码 0 才算跑通。这 130 行是仓库里所有约定的最小缩影，改别的脚本之前先把它跑一遍。
+
+## 从一张电路图到工程文件
+
+给一张截图或者教材上的图，先把它读成一份清单（JSON），再由程序照清单画。
+中间那一层是为了让「读图」和「画图」分开：读错了改 JSON，不用重新画。
+
+```
+图片  →  清单 spec.json  →  draw_spec.py  →  网表  →  netlist_diff.py
+        （谁连谁的列表）      （摆件、连线）           （跟清单逐脚对）
+```
+
+清单长这样，只写电气关系，不写坐标：
+
+```json
+{"components": [{"ref": "U1", "part": "74LS373", "col": 1, "row": 0}],
+ "nets": [{"name": "IN0", "pins": [["SW0", "COM"], ["U1", "D0"]]}]}
+```
+
+```bash
+python scripts/draw_spec.py --spec spec/demo373.json --dry-run   # 先看打算怎么摆
+python scripts/draw_spec.py --spec spec/demo373.json --check     # 真画，画完自己核对
+```
+
+`--check` 会读回网表跟清单比，输出三种问题：分家（该连的断了）、短接（不该连的粘上了）、
+没交代（图上有、清单里没写）。第三种是这套办法的软肋：清单漏一根线，图和清单会一起错，
+所以它默认只警告，加 `--strict` 才算失败。
+
+跑出来是这样，11 个元件、13 个网，15/15 一致：
+
+![照清单画出来的电路](assets/spec-drawn.png)
+
+它只管电气对不对。元件位置是程序按列排的，走线是自动布的，跟原图不会长得一样。
+想要摆得像原图，得在清单里给 `x` / `y` 一个个调，那是另一件事。
 
 ## 一般流程
 
@@ -177,6 +213,10 @@ python scripts/mcpc.py schema route_nets    # 看完整参数说明
 | 16 | `get_component_info` 报 "reads the compiled netlist" | 它读编译后的网表，事务没提交之前用不了。先 `end_transaction`；中途想看用 `get_image` 或 `get_object_geometry` |
 | 17 | 第二次 `begin_transaction` 报 nested | 每次 `begin` 要配对一次 `end`。脚本里失败重试很容易漏，事务就套起来了；`abandon: true` 只对最外层有效，得先用普通 `end` 一层层关掉 |
 | 18 | 打标号报 "would overlap the existing terminal(s)" | 两个标号抢同一块地方。把器件拉开，或者斜着错开（LED 竖排时每条横移 800 thou 就行） |
+| 19 | 每条网都报 `routed: 0`，实际线已经通了 | `mcpc.call()` 返回的已经是解好的 dict，再 `json.loads` 一次会抛异常，被自己的 `except` 吞掉当成布不通。写代码时先 `isinstance(res, dict)` |
+| 20 | 刚 `end_transaction` 就读网表，报 "not recompiled until you commit" | 提交后网表要重编译，读早了就是这个错。等一两秒重试，别以为事务没提交 |
+| 21 | 弹窗卡住流程，发键盘消息又对不上按钮 | 用 `ui_answer_dialog`：先 `get_current_status` 或 `ui_list` 拿对话框 id，再按 key（`Yes` / `No` / `Ok`）回答，不用外部模拟按键。注意对话框要显示满 4 秒才能关，早了会拒绝 |
+| 22 | 想新建或删除图纸 | 走菜单命令：`command_list` 里找 New Sheet / Next Sheet / Remove/Delete Sheet，用 `command_invoke` 带 cmd_id 调。删除会弹确认框，按第 21 条回答 |
 
 ## 那张 ALU 的连接
 
