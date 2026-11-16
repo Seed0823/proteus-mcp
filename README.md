@@ -7,6 +7,11 @@ netlist, run simulation. No GUI automation, no clicking.
 
 ---
 
+> **非官方项目 / Unofficial project.** Proteus 是 Labcenter Electronics Ltd. 的
+> 注册商标，此处仅作描述性指代。本项目与 Labcenter 无隶属关系，未获其认可、
+> 支持或赞助。使用前请确认你持有合法授权的 Proteus 副本。
+> 本仓库只含文档与脚本，**不含** Labcenter 的任何代码、元件模型或元件库数据。
+
 ## 这是什么
 
 Proteus 9 装好后，它自带的 AI 助手 **ProPilot** 会在本机起一个 **MCP 服务**
@@ -138,5 +143,11 @@ SW_LOAD → 四片 373 的 LE（1=透明，0=保持）
 
 ## 声明
 
-非官方项目，与 Labcenter Electronics 无关。ProPilot 升级可能改动端点或参数，
-接口以运行时 `tools/list` 为准。请只在你自己的工程上使用。
+- 非官方项目，与 Labcenter Electronics Ltd. 无隶属关系，**未获其认可、支持或赞助**。
+- **Proteus** 是 Labcenter Electronics Ltd. 的注册商标，本项目仅在描述兼容对象时指代该名称。
+- 使用本仓库需要你**合法持有 Proteus 许可证**。本项目不提供、不协助获取任何授权绕过方式，
+  也不包含任何可用于绕过授权的代码或说明。
+- 本仓库只包含文档与脚本，**不含** Labcenter 的任何代码、元件模型（`.MODEL`）、
+  元件库（`.LIB`）或原理图文件（`.pdsprj`），请勿把此类文件通过本项目的 issue / PR 提交。
+- 接口参数由运行时 `tools/list` 探测所得，随 ProPilot 版本变化可能失效；
+  一切以实时 schema 为准。作者不对因使用本项目产生的任何后果负责。
